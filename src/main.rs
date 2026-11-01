@@ -5,7 +5,7 @@ mod dialog;
 use std::process::{Command, Output};
 use std::io::{self, BufRead, Write};
 
-const WINDOW_DIMENSIONS: egui::Vec2 = egui::vec2(500., 530.);
+const WINDOW_DIMENSIONS: egui::Vec2 = egui::vec2(500., 510.);
 
 static mut ACCESS_KEY: String = String::new();
 static mut SECRET_ACCESS_KEY: String = String::new();
