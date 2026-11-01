@@ -84,6 +84,8 @@ impl eframe::App for AppMain {
 
         if ui.button("List Objects").clicked() {
             let cmd = format!("aws s3api list-objects-v2 --bucket {} --prefix {} --query Contents[].Key --output text", bucket_name, alloc_folder);
+            println!("Running command: {}", cmd);
+
             let output = run_command_with_envs(cmd.as_str(), vec![
                 ("AWS_ACCESS_KEY_ID", access_key.as_str()),
                 ("AWS_SECRET_ACCESS_KEY", secret_access_key.as_str()),
@@ -125,6 +127,8 @@ impl eframe::App for AppMain {
                 dialog::dialog_error("Upload failed", "Please select a file to upload");
             } else {
                 let cmd = format!("aws s3 cp {} s3://{}/{}/", self.upload_query, bucket_name, alloc_folder);
+                println!("Running command: {}", cmd);
+
                 let output = run_command_with_envs(cmd.as_str(), vec![
                     ("AWS_ACCESS_KEY_ID", access_key.as_str()),
                     ("AWS_SECRET_ACCESS_KEY", secret_access_key.as_str()),
@@ -180,6 +184,8 @@ impl eframe::App for AppMain {
                 dialog::dialog_error("Upload failed", "Please select a folder to download to, and a file to download");
             } else {
                 let cmd = format!("aws s3 cp s3://{}/{}/{} {}", bucket_name, alloc_folder, self.file_download_query, self.download_query);
+                println!("Running command: {}", cmd);
+
                 let output = run_command_with_envs(cmd.as_str(), vec![
                     ("AWS_ACCESS_KEY_ID", access_key.as_str()),
                     ("AWS_SECRET_ACCESS_KEY", secret_access_key.as_str()),
