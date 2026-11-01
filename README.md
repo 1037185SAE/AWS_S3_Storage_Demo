@@ -18,13 +18,25 @@ Afterwards, open a terminal, navigate to the folder with the cloned repo inside,
 cargo build --release
 ```
 
+The resulting binary will then be available in the folder `target/release`.
+
 If you wish to compile with debug symbols enabled, simply omit the --release flag:
 
 ```sh
 cargo build
 ```
 
+When compiling with debug, the binary will instead be placed in `target/debug`.
+
 Please keep in mind that if compiling with debug symbols enabled, the UI will have extra debug information present, and the resulting binary will be **much** bigger (300+ MB as opposed to <10MB, from experience).
+
+If at any point you wish to rebuild everything, or clear the hundreds of megabytes of used space that rust is known for, simply run the command:
+
+```sh
+cargo clean
+```
+
+In the folder, and the cached data will be deleted.
 
 You will need to run the program from the terminal, as it will ask for some credentials relating to your AWS account and IAM user:
 
