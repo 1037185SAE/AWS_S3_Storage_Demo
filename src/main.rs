@@ -5,7 +5,7 @@ mod dialog;
 use std::process::{Command, Output};
 use std::io::{self, BufRead, Write};
 
-const WINDOW_DIMENSIONS: egui::Vec2 = egui::vec2(500., 512.);
+const WINDOW_DIMENSIONS: egui::Vec2 = egui::vec2(500., 530.);
 
 static mut ACCESS_KEY: String = String::new();
 static mut SECRET_ACCESS_KEY: String = String::new();
@@ -28,7 +28,8 @@ struct AppMain {
     objects: String,
     download_query: String,
     file_download_query: String,
-    upload_query: String
+    upload_query: String,
+    delete_query: String
 }
 
 impl eframe::App for AppMain {
@@ -206,6 +207,42 @@ impl eframe::App for AppMain {
         if ui.button("Clear Download Selection").clicked() {
             self.download_query.clear();
             self.file_download_query.clear();
+        }
+
+        ui.separator();
+        ui.label("Delete Objects");
+
+        let selection_result = subtitle("Selected File");
+        ui.label(selection_result);
+
+        let text_box = egui::TextEdit::singleline(&mut self.delete_query)
+            .interactive(true)
+            .desired_width(f32::INFINITY)
+            .font(egui::FontId::monospace(16.));
+        
+        ui.add(text_box);
+
+        if ui.button("Delete Object").clicked() {
+            if self.delete_query == "<NONE>" {
+                dialog::dialog_error("Deletion failed", "Please select a file to delete");
+            } else {
+                let cmd = format!("aws s3 rm s3://{}/{}/{}", bucket_name, alloc_folder, self.delete_query);
+                println!("Running command: {}", cmd);
+
+                let output = run_command_with_envs(cmd.as_str(), vec![
+                    ("AWS_ACCESS_KEY_ID", access_key.as_str()),
+                    ("AWS_SECRET_ACCESS_KEY", secret_access_key.as_str()),
+                    ("AWS_ACCOUNT_ID", account_id.as_str()),
+                    ("AWS_DEFAULT_REGION", default_region.as_str())
+                ]).unwrap();
+
+                if ! output.status.success() {
+                    dialog::dialog_error("List Failed", "Failed to delete object. Check console for details");
+                    eprintln!("aws exited with error code: {}", output.status.code().unwrap());
+                } else {
+                    dialog::dialog_info("Success", "Object deletion successful");
+                }
+            }
         }
     }
 }
