@@ -2,8 +2,7 @@
 
 mod dialog;
 
-use std::process::{Command, Output};
-use std::io::{self, BufRead, Write};
+use std::{process::{Command, Output}, io::{self, BufRead, Write}};
 
 const WINDOW_DIMENSIONS: egui::Vec2 = egui::vec2(500., 610.);
 
