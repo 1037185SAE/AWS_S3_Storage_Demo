@@ -90,10 +90,13 @@ impl eframe::App for AppMain {
                 ("AWS_ACCOUNT_ID", account_id.as_str()),
                 ("AWS_DEFAULT_REGION", default_region.as_str())
             ]).unwrap();
-            assert!(output.status.success() == true, "This is a prototype. Proper error handling is a suggestion.");
-            dialog::dialog_info("Success", "Objects list retrieval successful");
-
-            self.objects = String::from_utf8_lossy(output.stdout.as_slice()).to_string();
+            if ! output.status.success() {
+                dialog::dialog_error("List Failed", "Failed to list objects. Check console for details");
+                eprintln!("aws exited with error code: {}, and outputted this error message: {}", output.status.code().unwrap(), String::from_utf8_lossy(output.stderr.as_slice()).to_string());
+            } else {
+                dialog::dialog_info("Success", "Objects list retrieval successful");
+                self.objects = String::from_utf8_lossy(output.stdout.as_slice()).to_string();
+            }
         }
 
         ui.separator();
@@ -128,8 +131,12 @@ impl eframe::App for AppMain {
                     ("AWS_ACCOUNT_ID", account_id.as_str()),
                     ("AWS_DEFAULT_REGION", default_region.as_str())
                 ]).unwrap();
-                assert!(output.status.success() == true, "This is a prototype. Proper error handling is a suggestion.");
-                dialog::dialog_info("Success", "Object upload successful");
+                if ! output.status.success() {
+                    dialog::dialog_error("Upload Failed", "Failed to upload object. Check console for details");
+                    eprintln!("aws exited with error code: {}, and outputted this error message: {}", output.status.code().unwrap(), String::from_utf8_lossy(output.stderr.as_slice()).to_string());
+                } else {
+                    dialog::dialog_info("Success", "Object upload successful");
+                }
             }
         }
 
@@ -179,8 +186,13 @@ impl eframe::App for AppMain {
                     ("AWS_ACCOUNT_ID", account_id.as_str()),
                     ("AWS_DEFAULT_REGION", default_region.as_str())
                 ]).unwrap();
-                assert!(output.status.success() == true, "This is a prototype. Proper error handling is a suggestion.");
-                dialog::dialog_info("Success", "Object download successful");
+
+                if ! output.status.success() {
+                    dialog::dialog_error("List Failed", "Failed to download object. Check console for details");
+                    eprintln!("aws exited with error code: {}, and outputted this error message: {}", output.status.code().unwrap(), String::from_utf8_lossy(output.stderr.as_slice()).to_string());
+                } else {
+                    dialog::dialog_info("Success", "Object download successful");
+                }
             }
         }
 
