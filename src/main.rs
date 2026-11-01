@@ -10,7 +10,8 @@ const WINDOW_DIMENSIONS: egui::Vec2 = egui::vec2(100., 300.);
 static mut ACCESS_KEY: String = String::new();
 static mut SECRET_ACCESS_KEY: String = String::new();
 static mut DEFAULT_REGION: String = String::new();
-static mut USERNAME: String = String::new();
+static mut ALLOC_FOLDER: String = String::new();
+static mut BUCKET_NAME: String = String::new();
 static mut ACCOUNT_ID: String = String::new();
 
 macro_rules! access_static {
@@ -36,13 +37,15 @@ impl eframe::App for AppMain {
             egui::RichText::new(text).size(8.)
         }
         
-        let username;
+        let alloc_folder;
+        let bucket_name;
         let account_id;
         let access_key;
         let secret_access_key;
         let default_region;
 
-        access_static!(username < USERNAME);
+        access_static!(alloc_folder < ALLOC_FOLDER);
+        access_static!(bucket_name < BUCKET_NAME);
         access_static!(account_id < ACCOUNT_ID);
         access_static!(access_key < ACCESS_KEY);
         access_static!(secret_access_key < SECRET_ACCESS_KEY);
@@ -80,7 +83,7 @@ impl eframe::App for AppMain {
         );
 
         if ui.button("List Objects").clicked() {
-            let cmd = format!("aws s3api list-objects-v2 --bucket 1037185sae-storage-demo --prefix {}_stuff --query Contents[].Key --output text", username);
+            let cmd = format!("aws s3api list-objects-v2 --bucket {} --prefix {} --query Contents[].Key --output text", bucket_name, alloc_folder);
             let output = run_command_with_envs(cmd.as_str(), vec![
                 ("AWS_ACCESS_KEY_ID", access_key.as_str()),
                 ("AWS_SECRET_ACCESS_KEY", secret_access_key.as_str()),
@@ -118,7 +121,7 @@ impl eframe::App for AppMain {
             if self.upload_query == "<NONE>" {
                 dialog::dialog_error("Upload failed", "Please select a file to upload");
             } else {
-                let cmd = format!("aws s3 cp {} s3://1037185sae-storage-demo/{}_stuff/", self.upload_query, username);
+                let cmd = format!("aws s3 cp {} s3://{}/{}/", self.upload_query, bucket_name, alloc_folder);
                 let output = run_command_with_envs(cmd.as_str(), vec![
                     ("AWS_ACCESS_KEY_ID", access_key.as_str()),
                     ("AWS_SECRET_ACCESS_KEY", secret_access_key.as_str()),
@@ -169,7 +172,7 @@ impl eframe::App for AppMain {
             if self.download_query == "<NONE>" || self.file_download_query == "<NONE>" {
                 dialog::dialog_error("Upload failed", "Please select a folder to download to, and a file to download");
             } else {
-                let cmd = format!("aws s3 cp s3://1037185sae-storage-demo/{}_stuff/{} {}", username, self.file_download_query, self.download_query);
+                let cmd = format!("aws s3 cp s3://{}/{}/{} {}", alloc_folder, self.file_download_query, bucket_name, self.download_query);
                 let output = run_command_with_envs(cmd.as_str(), vec![
                     ("AWS_ACCESS_KEY_ID", access_key.as_str()),
                     ("AWS_SECRET_ACCESS_KEY", secret_access_key.as_str()),
@@ -213,7 +216,8 @@ fn prompt_user(prompt: &str) -> Result<String, std::io::Error> {
 }
 
 fn main() -> Result<(), io::Error> {
-    let username = prompt_user("Username: ")?;
+    let alloc_folder = prompt_user("Allocated folder: ")?;
+    let bucket_name = prompt_user("Bucket name: ")?;
     let account_id = prompt_user("Account ID: ")?;
     let access_key = prompt_user("Access Key: ")?;
     let secret_access_key = rpassword::prompt_password("Secret Access Key (keypresses are not echoed): ")?;
@@ -228,7 +232,8 @@ fn main() -> Result<(), io::Error> {
         }
     };
 
-    access_static!(username > USERNAME);
+    access_static!(alloc_folder > ALLOC_FOLDER);
+    access_static!(bucket_name > BUCKET_NAME);
     access_static!(account_id > ACCOUNT_ID);
     access_static!(access_key > ACCESS_KEY);
     access_static!(secret_access_key > SECRET_ACCESS_KEY);
