@@ -28,7 +28,7 @@ cargo build
 
 When compiling with debug, the binary will instead be placed in `target/debug`.
 
-Please keep in mind that if compiling with debug symbols enabled, the UI will have extra debug information present, and the resulting binary will be **much** bigger (300+ MB as opposed to <10MB, from experience).
+Please keep in mind that if compiling with debug symbols enabled, the UI will have extra debug information present, and the resulting binary will be **much** bigger (300+ MB as opposed to <30MB, from experience).
 
 If at any point you wish to rebuild everything, or clear the hundreds of megabytes of used space that rust is known for, simply run the command:
 
