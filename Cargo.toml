@@ -7,3 +7,6 @@ edition = "2024"
 [dependencies]
 eframe = "0.37.0"
 egui = "0.37.0"
+native-dialog = "0.9.7"
+rfd = "0.17.2"
+rpassword = "7.5.4"
