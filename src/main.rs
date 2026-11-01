@@ -230,6 +230,7 @@ fn prompt_user(prompt: &str) -> Result<String, std::io::Error> {
 
     let mut input_buf = String::new();
     std::io::stdin().lock().read_line(&mut input_buf)?;
+    input_buf = input_buf.trim().to_string();
     Ok(input_buf)
 }
 
