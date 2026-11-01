@@ -34,7 +34,7 @@ struct AppMain {
 impl eframe::App for AppMain {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
         fn subtitle(text: &str) -> egui::RichText {
-            egui::RichText::new(text).size(8.)
+            egui::RichText::new(text).size(12.)
         }
         
         let alloc_folder;
@@ -76,7 +76,7 @@ impl eframe::App for AppMain {
                     .interactive(false)
                     .desired_width(f32::INFINITY)
                     .desired_rows(16)
-                    .font(egui::FontId::monospace(11.));
+                    .font(egui::FontId::monospace(16.));
 
                 ui.add(text_box);
             }
@@ -110,7 +110,7 @@ impl eframe::App for AppMain {
         let text_box = egui::TextEdit::singleline(&mut self.upload_query)
             .interactive(false)
             .desired_width(f32::INFINITY)
-            .font(egui::FontId::monospace(11.));
+            .font(egui::FontId::monospace(16.));
         
         ui.add(text_box);
 
@@ -157,7 +157,7 @@ impl eframe::App for AppMain {
         let text_box = egui::TextEdit::singleline(&mut self.download_query)
             .interactive(false)
             .desired_width(f32::INFINITY)
-            .font(egui::FontId::monospace(11.));
+            .font(egui::FontId::monospace(16.));
         
         ui.add(text_box);
 
@@ -175,7 +175,7 @@ impl eframe::App for AppMain {
         let text_box = egui::TextEdit::singleline(&mut self.file_download_query)
             .interactive(true)
             .desired_width(f32::INFINITY)
-            .font(egui::FontId::monospace(11.));
+            .font(egui::FontId::monospace(16.));
 
         ui.add(text_box);
 
@@ -216,6 +216,7 @@ fn run_command_with_envs(cmd: &str, envs: Vec<(&str, &str)>) -> Result<Output, i
     let prog_args = &argv[1..];
     let mut cmd = Command::new(prog);
     cmd.args(prog_args);
+    cmd.stdout(std::process::Stdio::piped());
 
     for (key, val) in envs {
         cmd.env(key, val);
