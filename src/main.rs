@@ -5,7 +5,7 @@ mod dialog;
 use std::process::{Command, Output};
 use std::io::{self, BufRead, Write};
 
-const WINDOW_DIMENSIONS: egui::Vec2 = egui::vec2(500., 620.);
+const WINDOW_DIMENSIONS: egui::Vec2 = egui::vec2(500., 610.);
 
 static mut ACCESS_KEY: String = String::new();
 static mut SECRET_ACCESS_KEY: String = String::new();
@@ -62,6 +62,10 @@ impl eframe::App for AppMain {
 
         if self.file_download_query.is_empty() {
             self.file_download_query = "<NONE>".to_string();
+        }
+
+        if self.delete_query.is_empty() {
+            self.delete_query = "<NONE>".to_string();
         }
         
         let title = egui::RichText::new("Simple S3 Demo").size(12.);
