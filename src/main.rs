@@ -172,7 +172,7 @@ impl eframe::App for AppMain {
             if self.download_query == "<NONE>" || self.file_download_query == "<NONE>" {
                 dialog::dialog_error("Upload failed", "Please select a folder to download to, and a file to download");
             } else {
-                let cmd = format!("aws s3 cp s3://{}/{}/{} {}", alloc_folder, self.file_download_query, bucket_name, self.download_query);
+                let cmd = format!("aws s3 cp s3://{}/{}/{} {}", bucket_name, alloc_folder, self.file_download_query, self.download_query);
                 let output = run_command_with_envs(cmd.as_str(), vec![
                     ("AWS_ACCESS_KEY_ID", access_key.as_str()),
                     ("AWS_SECRET_ACCESS_KEY", secret_access_key.as_str()),
