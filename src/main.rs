@@ -98,6 +98,7 @@ impl eframe::App for AppMain {
             } else {
                 dialog::dialog_info("Success", "Objects list retrieval successful");
                 self.objects = String::from_utf8_lossy(output.stdout.as_slice()).to_string();
+                self.objects = self.objects.split(' ').filter(|f| f.len() > 0).collect::<Vec<&str>>().join("\n");
             }
         }
 
